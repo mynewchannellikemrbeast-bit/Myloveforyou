@@ -1,0 +1,28 @@
+ASSET PLACEHOLDERS - Replace these with actual files:
+
+REQUIRED FILES:
+===============
+
+GIFS (assets/gifs/):
+- couple-1.gif (Page 2 - Heart Reveal)
+- couple-2.gif (Page 3 - Letter Reveal)
+- couple-3.gif (Page 4 - Stars Reveal)
+- couple-4.gif (Page 5 - Flowers Reveal)
+- couple-5.gif (Page 6 - The Question)
+- couple-success.gif (Page 7 - Success)
+
+IMAGES (assets/images/):
+- screen-break.png (Cracked screen overlay effect)
+- profile-1.jpg (Optional - from Instagram @slyxqueny)
+- profile-2.jpg (Optional - from Instagram @slyxqueny)
+- profile-3.jpg (Optional - from Instagram @slyxqueny)
+
+SOUNDS (assets/sounds/):
+- click-soft.mp3 (Continue button clicks)
+- reveal.mp3 (Reveal interactions)
+- no-escape.mp3 (NO button escaping)
+- screen-break.mp3 (Glass shatter sound)
+- yes-click.mp3 (YES button click)
+- success.mp3 (Success page celebration)
+
+See README.md for detailed instructions on where to find these assets!
