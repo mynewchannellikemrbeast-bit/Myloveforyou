@@ -160,17 +160,16 @@
         .btn-no {
             background: #7f8fa6;
             transition: all 0.2s ease;
-            position: relative; /* Default position */
+            position: relative;
             z-index: 101;
         }
 
-        /* Class to make the button float freely on body */
         .btn-no.escape-mode {
             position: absolute;
             transition: top 0.3s ease, left 0.3s ease;
         }
 
-        /* --- PHOTO DECK (FINAL PAGE) --- */
+        /* --- PHOTO DECK --- */
         #photo-deck-container {
             position: absolute;
             top: 50%;
@@ -178,7 +177,7 @@
             transform: translate(-50%, -50%);
             width: 300px;
             height: 300px;
-            z-index: 20; /* Above background */
+            z-index: 20;
         }
 
         .photo-card {
@@ -194,7 +193,6 @@
             cursor: pointer;
         }
 
-        /* Animation for falling off */
         .falling {
             animation: fallOff 0.8s forwards ease-in;
             pointer-events: none;
@@ -215,9 +213,9 @@
             background: url('assets/images/screen-break.png') no-repeat center center;
             background-size: cover;
             z-index: 9999;
-            pointer-events: none; /* Allows clicking Yes underneath */
+            pointer-events: none;
             display: none;
-            mix-blend-mode: multiply; /* Makes the cracks look realistic on top */
+            mix-blend-mode: multiply;
             opacity: 0.9;
         }
 
@@ -292,7 +290,7 @@
 
         <div class="card" id="page-6">
             <div class="gif-container">
-                <img src="assets/gifs/couple-5.gif" alt="Question Gif">
+                <img id="question-gif" src="assets/gifs/couple-5.gif" alt="Question Gif">
             </div>
             <h2>Will you be my Valentine? 🌹</h2>
             <div class="btn-group" id="question-btn-group">
@@ -320,9 +318,15 @@
             'assets/images/img8.png',
             'assets/images/img9.png',
             'assets/images/img10.png',
-            'assets/images/img12.png',
-        
-            // Add more images here
+            'assets/images/img11.png',
+        ];
+
+        // Angry GIF Sequence
+        const angryGifs = [
+            'assets/gifs/angry1.gif',
+            'assets/gifs/angry2.gif',
+            'assets/gifs/angry3.gif',
+            'assets/gifs/angry4.gif'
         ];
 
         let noClickCount = 0;
@@ -365,17 +369,16 @@
 
         // --- NO BUTTON LOGIC ---
         const noBtn = document.getElementById('no-btn');
+        const questionGif = document.getElementById('question-gif');
 
         function moveNoButton() {
-            // First time logic: Move button out of the card to the body
-            // This ensures it can move anywhere on screen without being trapped by flexbox
+            // First time: detach button
             if (noBtn.parentElement.id === 'question-btn-group') {
                 noBtn.remove();
                 document.body.appendChild(noBtn);
                 noBtn.classList.add('escape-mode');
             }
 
-            // Calculate random position within viewport padding
             const padding = 20;
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - (padding * 2)) + padding;
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - (padding * 2)) + padding;
@@ -385,11 +388,16 @@
         }
 
         function handleNo() {
-            if (isScreenBroken) return; // Ignore clicks if screen is broken
+            if (isScreenBroken) return;
 
             sNo.currentTime = 0;
             sNo.play();
             
+            // 1. Change GIF based on current count
+            if (noClickCount < angryGifs.length) {
+                questionGif.src = angryGifs[noClickCount];
+            }
+
             noClickCount++;
             moveNoButton();
 
@@ -398,7 +406,6 @@
             }
         }
 
-        // Add mouseover for desktop users so it's super hard to click
         noBtn.addEventListener('mouseover', () => {
              if (!isScreenBroken && noClickCount > 0) moveNoButton();
         });
@@ -411,34 +418,31 @@
             sBreak.currentTime = 0;
             sBreak.play();
 
-            // Hide the break after 6 seconds
+            // Reset after 6 seconds
             breakTimeout = setTimeout(() => {
                 breakEl.style.display = 'none';
                 isScreenBroken = false;
-                noClickCount = 0; 
-                // Return button to normal? Optional, but let's keep it chaotic.
+                noClickCount = 0;
+                
+                // RESET GIF TO ORIGINAL CUTE ONE
+                questionGif.src = 'assets/gifs/couple-5.gif';
             }, 6000);
         }
 
         // --- YES BUTTON LOGIC ---
         function handleYes() {
-            // 1. Cancel Screen Break if active
             clearTimeout(breakTimeout);
             document.getElementById('screen-break').style.display = 'none';
             sBreak.pause();
 
-            // 2. Play Sound
             sYes.play();
 
-            // 3. Remove the No button from existence
             if (noBtn) noBtn.remove();
 
-            // 4. Hide Question Card
             const card = document.getElementById('page-6');
             card.classList.remove('active');
             card.style.display = 'none';
 
-            // 5. Start Success Sequence
             setupSuccessPage();
         }
 
@@ -446,25 +450,20 @@
             const page7 = document.getElementById('page-7');
             page7.style.display = 'block';
             
-            // Show background gif (keep it looping)
             const bgGif = document.getElementById('success-bg');
             bgGif.style.display = 'block';
 
             sSuccess.play();
-            
             initPhotoDeck();
         }
 
-        // --- PHOTO DECK LOGIC ---
+        // --- PHOTO DECK ---
         function initPhotoDeck() {
             const container = document.getElementById('photo-deck-container');
-            // Duplicate array to ensure endless feel
             let deckImages = [...photoAssets, ...photoAssets, ...photoAssets]; 
 
             function renderDeck() {
                 container.innerHTML = ''; 
-                
-                // Render top 5 images for the stack effect
                 const maxRender = Math.min(deckImages.length, 5);
 
                 for (let i = 0; i < maxRender; i++) {
@@ -475,37 +474,29 @@
                     card.style.zIndex = 100 - i;
                     
                     if (i > 0) {
-                        // Style cards behind
                         let scale = 1 - (i * 0.05);
                         let translateY = i * 15;
                         card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
                         card.style.filter = `brightness(${1 - (i*0.15)})`;
                     } else {
-                        // Top card is clickable
                         card.onclick = () => dropTopCard(card);
                     }
-                    
                     container.appendChild(card);
                 }
             }
 
             function dropTopCard(cardElement) {
-                // Animate fall
                 cardElement.classList.add('falling');
                 sClick.currentTime = 0;
                 sClick.play();
-
-                // Wait for animation, then rotate array and re-render
                 setTimeout(() => {
                     const movedImage = deckImages.shift();
                     deckImages.push(movedImage);
                     renderDeck();
                 }, 400); 
             }
-
             renderDeck();
         }
-
     </script>
 </body>
 </html>
