@@ -2,711 +2,501 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Will You Be My Valentine? An interactive romantic experience">
-    <title>Will You Be My Valentine? 💖</title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For You ❤️</title>
     <style>
-        /* ===== CSS RESET & BASE ===== */
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #ff9e9e;
+            --text-color: #4a4a4a;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            /* Animated gradient background */
-            background: linear-gradient(135deg, #FFB6C1, #FF69B4, #FF1493, #C71585);
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #ffecd2, #fcb69f, #fad0c4, #a1c4fd);
             background-size: 400% 400%;
-            animation: gradient-flow 15s ease infinite;
-            position: relative;
+            animation: gradientBG 15s ease infinite;
         }
 
-        @keyframes gradient-flow {
-            0%, 100% { background-position: 0% 50%; }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* ===== ACCESSIBILITY: REDUCED MOTION ===== */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-            }
-        }
-
-        /* ===== PAGE STRUCTURE ===== */
-        .page {
-            display: none;
+        /* --- CONTAINER & GLASSMORPHISM --- */
+        .container {
+            position: relative;
+            width: 90%;
+            max-width: 400px;
+            height: 85vh;
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            padding: 16px;
-            position: relative;
-            opacity: 0;
-            animation: fade-in 0.5s ease forwards;
+            perspective: 1000px;
+            z-index: 10;
         }
 
-        .page.active {
-            display: flex;
-        }
-
-        @keyframes fade-in {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ===== TYPOGRAPHY ===== */
-        h1, .question-text {
-            font-family: 'Pacifico', cursive;
-            color: #fff;
-            text-align: center;
-            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        h1 {
-            font-size: clamp(28px, 6vw, 48px);
-            margin-bottom: 24px;
-            line-height: 1.3;
-        }
-
-        .intro-text {
-            font-size: clamp(16px, 4vw, 20px);
-            color: #fff;
-            text-align: center;
-            max-width: 600px;
-            line-height: 1.6;
-            margin-bottom: 32px;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 24px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .message-placeholder {
-            font-size: clamp(18px, 4.5vw, 24px);
-            color: #fff;
-            text-align: center;
-            padding: 32px 24px;
-            background: rgba(255, 255, 255, 0.2);
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
             border-radius: 24px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            max-width: 500px;
-            margin: 20px 0;
-            border: 2px dashed rgba(255, 255, 255, 0.5);
-            min-height: 150px;
+            padding: 2rem;
+            width: 100%;
+            text-align: center;
+            box-shadow: var(--shadow);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .card.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- ELEMENTS --- */
+        h2 {
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        p {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .gif-container {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .gif-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .text-placeholder {
+            font-style: italic;
+            color: #888;
+            background: rgba(255,255,255,0.5);
+            padding: 10px;
+            border-radius: 8px;
+            width: 100%;
+            min-height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px dashed #ccc;
         }
 
-        /* ===== BUTTONS ===== */
+        /* --- BUTTONS --- */
         .btn {
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 700;
-            padding: 16px 48px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
             border: none;
+            padding: 12px 32px;
             border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
-            font-size: clamp(18px, 4vw, 24px);
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-            touch-action: manipulation;
-            min-width: 200px;
-            min-height: 56px;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
         }
 
         .btn:active {
             transform: scale(0.95);
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #FF69B4, #FF1493);
-            color: #fff;
-        }
-
-        .btn-continue {
-            background: linear-gradient(135deg, #FF69B4, #FF1493);
-            color: #fff;
-            animation: pulse-glow 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 8px 24px rgba(255, 20, 147, 0.4); }
-            50% { box-shadow: 0 8px 32px rgba(255, 20, 147, 0.6); }
-        }
-
-        /* ===== YES/NO BUTTONS ===== */
-        .button-container {
+        .btn-group {
             display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
             justify-content: center;
-            margin-top: 32px;
+            align-items: center;
+            min-height: 60px;
         }
 
         .btn-yes {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: #fff;
-            font-size: clamp(24px, 5vw, 32px);
-            padding: 20px 60px;
-            flex: 1;
-            max-width: 280px;
+            background: #4cd137; /* Fresh Green */
+            z-index: 100;
         }
 
         .btn-no {
-            background: linear-gradient(135deg, #f44336, #d32f2f);
-            color: #fff;
-            font-size: clamp(18px, 4vw, 24px);
-            padding: 14px 40px;
-            position: relative;
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            max-width: 200px;
+            background: #7f8fa6;
+            transition: all 0.2s ease;
+            position: relative; /* Default position */
+            z-index: 101;
         }
 
-        .btn-no.disabled {
-            opacity: 0.3;
-            pointer-events: none;
-        }
-
-        /* ===== REVEAL ELEMENTS ===== */
-        .reveal-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 32px;
-            max-width: 600px;
-        }
-
-        .reveal-element {
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            animation: float 3s ease-in-out infinite;
-            font-size: clamp(60px, 15vw, 120px);
-            user-select: none;
-        }
-
-        .reveal-element:hover {
-            transform: scale(1.1);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .revealed-message {
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            pointer-events: none;
-        }
-
-        .revealed-message.show {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* ===== GIF DECORATIONS ===== */
-        .couple-gif {
+        /* Class to make the button float freely on body */
+        .btn-no.escape-mode {
             position: absolute;
-            width: clamp(150px, 30vw, 300px);
-            height: auto;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.9;
-            animation: float-gentle 4s ease-in-out infinite;
+            transition: top 0.3s ease, left 0.3s ease;
         }
 
-        @keyframes float-gentle {
-            0%, 100% { transform: translateY(0px) translateX(0px); }
-            50% { transform: translateY(-15px) translateX(5px); }
-        }
-
-        .gif-top-right {
-            top: 10%;
-            right: 5%;
-        }
-
-        .gif-bottom-left {
-            bottom: 10%;
-            left: 5%;
-        }
-
-        .gif-center {
+        /* --- PHOTO DECK (FINAL PAGE) --- */
+        #photo-deck-container {
+            position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: clamp(200px, 40vw, 400px);
+            width: 300px;
+            height: 300px;
+            z-index: 20; /* Above background */
         }
 
-        /* ===== SCREEN BREAK OVERLAY ===== */
-        #screen-break-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 9999;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #screen-break-overlay.show {
-            display: flex;
-            opacity: 1;
-        }
-
-        .screen-break-image {
+        .photo-card {
             position: absolute;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            opacity: 0.8;
+            border-radius: 20px;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border: 4px solid white;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            cursor: pointer;
         }
 
-        /* ===== SUCCESS PAGE ===== */
-        .success-container {
-            text-align: center;
-            z-index: 10;
-            position: relative;
+        /* Animation for falling off */
+        .falling {
+            animation: fallOff 0.8s forwards ease-in;
+            pointer-events: none;
         }
 
-        .confetti {
+        @keyframes fallOff {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate(20px, 120vh) rotate(45deg); opacity: 0; }
+        }
+
+        /* --- SCREEN BREAK OVERLAY --- */
+        #screen-break {
             position: fixed;
-            width: 10px;
-            height: 10px;
-            background: #f0f;
-            animation: confetti-fall 3s linear infinite;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('assets/images/screen-break.png') no-repeat center center;
+            background-size: cover;
+            z-index: 9999;
+            pointer-events: none; /* Allows clicking Yes underneath */
+            display: none;
+            mix-blend-mode: multiply; /* Makes the cracks look realistic on top */
+            opacity: 0.9;
         }
 
-        @keyframes confetti-fall {
-            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        /* --- SUCCESS BACKGROUND --- */
+        .success-bg-gif {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            object-fit: cover;
+            opacity: 0.3;
+            pointer-events: none;
+            display: none;
         }
 
-        /* Generate confetti pieces */
-        .confetti:nth-child(1) { left: 10%; animation-delay: 0s; background: #FF69B4; }
-        .confetti:nth-child(2) { left: 20%; animation-delay: 0.2s; background: #FFB6C1; }
-        .confetti:nth-child(3) { left: 30%; animation-delay: 0.4s; background: #FF1493; }
-        .confetti:nth-child(4) { left: 40%; animation-delay: 0.6s; background: #C71585; }
-        .confetti:nth-child(5) { left: 50%; animation-delay: 0.8s; background: #FF69B4; }
-        .confetti:nth-child(6) { left: 60%; animation-delay: 1s; background: #FFB6C1; }
-        .confetti:nth-child(7) { left: 70%; animation-delay: 1.2s; background: #FF1493; }
-        .confetti:nth-child(8) { left: 80%; animation-delay: 1.4s; background: #C71585; }
-        .confetti:nth-child(9) { left: 90%; animation-delay: 1.6s; background: #FF69B4; }
-
-        /* ===== RESPONSIVE DESIGN ===== */
-        @media (max-width: 480px) {
-            .button-container {
-                flex-direction: column;
-                gap: 16px;
-                width: 100%;
-            }
-
-            .btn-yes, .btn-no {
-                max-width: 100%;
-                width: 100%;
-            }
-
-            .couple-gif {
-                width: clamp(120px, 25vw, 200px);
-            }
-
-            .intro-text {
-                padding: 20px;
-                font-size: 16px;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .page {
-                padding: 32px;
-            }
-
-            h1 {
-                font-size: 56px;
-            }
-
-            .intro-text {
-                font-size: 22px;
-                padding: 32px;
-            }
-        }
-
-        /* ===== HIDDEN UTILITY ===== */
-        .hidden {
-            display: none !important;
-        }
-
-        /* ===== QUESTION PAGE SPECIFIC ===== */
-        .question-text {
-            font-size: clamp(32px, 7vw, 56px);
-            margin-bottom: 16px;
-        }
     </style>
 </head>
 <body>
 
-    <!-- PAGE 1: INTRODUCTION -->
-    <div id="intro-page" class="page active">
-        <h1>Welcome! 💕</h1>
-        <div class="intro-text">
-            I built this website to ask you out for valentine's 🫣 although I'm already your boyfriend, it's my duty to this 🤭 hehe.
-        </div>
-        <button class="btn btn-continue" id="intro-continue">Continue</button>
-    </div>
+    <audio id="sound-click" src="assets/sounds/click-soft.mp3"></audio>
+    <audio id="sound-reveal" src="assets/sounds/reveal.mp3"></audio>
+    <audio id="sound-no" src="assets/sounds/no-escape.mp3"></audio>
+    <audio id="sound-break" src="assets/sounds/screen-break.mp3"></audio>
+    <audio id="sound-yes" src="assets/sounds/yes-click.mp3"></audio>
+    <audio id="sound-success" src="assets/sounds/success.mp3"></audio>
 
-    <!-- PAGE 2: FIRST REVEAL -->
-    <div id="reveal-page-1" class="page">
-        <img src="assets/gifs/couple-1.gif" alt="Couple animation" class="couple-gif gif-top-right">
-        <div class="reveal-container">
-            <h1>Click the heart! 💗</h1>
-            <div class="reveal-element" id="reveal-1-trigger">❤️</div>
-            <div class="revealed-message message-placeholder" id="reveal-1-message">
-                (add text)
+    <div id="screen-break"></div>
+
+    <img id="success-bg" class="success-bg-gif" src="assets/gifs/couple-success.gif" alt="Success">
+
+    <div class="container" id="main-container">
+        
+        <div class="card active" id="page-1">
+            <h2>Hey You! ❤️</h2>
+            <p>I built this website to ask you out for valentine's 🫣 although I'm already your boyfriend, it's my duty to this 🤭 hehe.</p>
+            <button class="btn" onclick="nextPage(2)">Continue</button>
+        </div>
+
+        <div class="card" id="page-2">
+            <div class="gif-container">
+                <img src="assets/gifs/couple-1.gif" alt="Cute Gif 1">
+            </div>
+            <div class="text-placeholder">(Add your handwritten text here)</div>
+            <button class="btn" onclick="nextPage(3)">Next</button>
+        </div>
+
+        <div class="card" id="page-3">
+            <div class="gif-container">
+                <img src="assets/gifs/couple-2.gif" alt="Cute Gif 2">
+            </div>
+            <div class="text-placeholder">(Add your handwritten text here)</div>
+            <button class="btn" onclick="nextPage(4)">Next</button>
+        </div>
+
+        <div class="card" id="page-4">
+            <div class="gif-container">
+                <img src="assets/gifs/couple-3.gif" alt="Cute Gif 3">
+            </div>
+            <div class="text-placeholder">(Add your handwritten text here)</div>
+            <button class="btn" onclick="nextPage(5)">Next</button>
+        </div>
+
+        <div class="card" id="page-5">
+            <div class="gif-container">
+                <img src="assets/gifs/couple-4.gif" alt="Cute Gif 4">
+            </div>
+            <div class="text-placeholder">(Add your handwritten text here)</div>
+            <button class="btn" onclick="nextPage(6)">One last thing...</button>
+        </div>
+
+        <div class="card" id="page-6">
+            <div class="gif-container">
+                <img src="assets/gifs/couple-5.gif" alt="Question Gif">
+            </div>
+            <h2>Will you be my Valentine? 🌹</h2>
+            <div class="btn-group" id="question-btn-group">
+                <button class="btn btn-yes" onclick="handleYes()">YES!</button>
+                <button class="btn btn-no" id="no-btn" onclick="handleNo()">NO</button>
             </div>
         </div>
-        <button class="btn btn-continue hidden" id="reveal-1-continue">Continue</button>
-    </div>
 
-    <!-- PAGE 3: SECOND REVEAL -->
-    <div id="reveal-page-2" class="page">
-        <img src="assets/gifs/couple-2.gif" alt="Couple animation" class="couple-gif gif-bottom-left">
-        <div class="reveal-container">
-            <h1>Open the letter! 💌</h1>
-            <div class="reveal-element" id="reveal-2-trigger">✉️</div>
-            <div class="revealed-message message-placeholder" id="reveal-2-message">
-                (add text)
-            </div>
+        <div id="page-7" style="display:none; width: 100%; height: 100%;">
+            <div id="photo-deck-container"></div>
         </div>
-        <button class="btn btn-continue hidden" id="reveal-2-continue">Continue</button>
+
     </div>
 
-    <!-- PAGE 4: THIRD REVEAL -->
-    <div id="reveal-page-3" class="page">
-        <img src="assets/gifs/couple-3.gif" alt="Couple animation" class="couple-gif gif-top-right">
-        <div class="reveal-container">
-            <h1>Touch the stars! ✨</h1>
-            <div class="reveal-element" id="reveal-3-trigger">⭐</div>
-            <div class="revealed-message message-placeholder" id="reveal-3-message">
-                (add text)
-            </div>
-        </div>
-        <button class="btn btn-continue hidden" id="reveal-3-continue">Continue</button>
-    </div>
-
-    <!-- PAGE 5: FOURTH REVEAL -->
-    <div id="reveal-page-4" class="page">
-        <img src="assets/gifs/couple-4.gif" alt="Couple animation" class="couple-gif gif-bottom-left">
-        <div class="reveal-container">
-            <h1>Pick the flowers! 💐</h1>
-            <div class="reveal-element" id="reveal-4-trigger">🌹</div>
-            <div class="revealed-message message-placeholder" id="reveal-4-message">
-                (add text)
-            </div>
-        </div>
-        <button class="btn btn-continue hidden" id="reveal-4-continue">Continue</button>
-    </div>
-
-    <!-- PAGE 6: THE BIG QUESTION -->
-    <div id="question-page" class="page">
-        <img src="assets/gifs/couple-5.gif" alt="Couple animation" class="couple-gif gif-top-right">
-        <h1 class="question-text">Will you be my valentine? 💖</h1>
-        <div class="button-container">
-            <button class="btn btn-yes" id="yes-button">YES! 💕</button>
-            <button class="btn btn-no" id="no-button">No</button>
-        </div>
-    </div>
-
-    <!-- PAGE 7: SUCCESS PAGE -->
-    <div id="success-page" class="page">
-        <img src="assets/gifs/couple-success.gif" alt="Happy couple" class="couple-gif gif-center">
-
-        <!-- Confetti animation -->
-        <div class="confetti"></div>
-        <div class="confetti"></div>
-        <div class="confetti"></div>
-        <div class="confetti"></div>
-        <div class="confetti"></div>
-        <div class="confetti"></div>
-        <div class="confetti"></div>
-        <div class="confetti"></div>
-        <div class="confetti"></div>
-
-        <div class="success-container">
-            <h1>🎉 Yay! 🎉</h1>
-            <div class="message-placeholder">
-                (add text)
-            </div>
-        </div>
-    </div>
-
-    <!-- SCREEN BREAK OVERLAY -->
-    <div id="screen-break-overlay">
-        <img src="assets/images/screen-break.png" alt="Screen break effect" class="screen-break-image">
-    </div>
-
-    <!-- JAVASCRIPT -->
     <script>
-        // ===== AUDIO SYSTEM =====
-        function playSound(soundFile) {
-            try {
-                const audio = new Audio(`assets/sounds/${soundFile}`);
-                audio.volume = 0.7;
-                audio.play().catch(err => console.log('Audio play blocked:', err));
-            } catch (err) {
-                console.log('Audio error:', err);
-            }
-        }
+        // --- CONFIGURATION ---
+        const photoAssets = [
+            'assets/images/img1.png',
+            'assets/images/img2.png',
+            'assets/images/img3.png'
+            // Add more images here
+        ];
 
-        // ===== PAGE NAVIGATION =====
-        let currentPage = 'intro-page';
-
-        function navigateToPage(pageId) {
-            // Hide current page
-            const current = document.getElementById(currentPage);
-            if (current) {
-                current.classList.remove('active');
-            }
-
-            // Show new page
-            const newPage = document.getElementById(pageId);
-            if (newPage) {
-                newPage.classList.add('active');
-                currentPage = pageId;
-
-                // Reset animation
-                newPage.style.animation = 'none';
-                setTimeout(() => {
-                    newPage.style.animation = 'fade-in 0.5s ease forwards';
-                }, 10);
-            }
-        }
-
-        // ===== PAGE 1: INTRO =====
-        document.getElementById('intro-continue').addEventListener('click', () => {
-            playSound('click-soft.mp3');
-            navigateToPage('reveal-page-1');
-        });
-
-        // ===== PAGES 2-5: REVEAL INTERACTIONS =====
-        function setupRevealPage(pageNum) {
-            const trigger = document.getElementById(`reveal-${pageNum}-trigger`);
-            const message = document.getElementById(`reveal-${pageNum}-message`);
-            const continueBtn = document.getElementById(`reveal-${pageNum}-continue`);
-
-            let revealed = false;
-
-            trigger.addEventListener('click', () => {
-                if (!revealed) {
-                    revealed = true;
-                    message.classList.add('show');
-                    playSound('reveal.mp3');
-
-                    // Show continue button after message appears
-                    setTimeout(() => {
-                        continueBtn.classList.remove('hidden');
-                    }, 500);
-                }
-            });
-
-            continueBtn.addEventListener('click', () => {
-                playSound('click-soft.mp3');
-                const nextPage = pageNum < 4 ? `reveal-page-${pageNum + 1}` : 'question-page';
-                navigateToPage(nextPage);
-            });
-        }
-
-        // Initialize all reveal pages
-        setupRevealPage(1);
-        setupRevealPage(2);
-        setupRevealPage(3);
-        setupRevealPage(4);
-
-        // ===== PAGE 6: THE QUESTION (NO BUTTON LOGIC) =====
         let noClickCount = 0;
-        const noButton = document.getElementById('no-button');
-        const yesButton = document.getElementById('yes-button');
-        let screenBreakTriggered = false;
+        const maxNoClicks = 5; 
+        let isScreenBroken = false;
+        let breakTimeout;
 
-        // NO button movement on hover and click
-        function moveNoButton(event) {
-            if (screenBreakTriggered) return;
+        // Sounds
+        const sClick = document.getElementById('sound-click');
+        const sReveal = document.getElementById('sound-reveal');
+        const sNo = document.getElementById('sound-no');
+        const sBreak = document.getElementById('sound-break');
+        const sYes = document.getElementById('sound-yes');
+        const sSuccess = document.getElementById('sound-success');
 
-            event.preventDefault();
-            noClickCount++;
+        // Navigation
+        function nextPage(pageNumber) {
+            sClick.currentTime = 0;
+            sClick.play().catch(e => console.log("Autoplay prevented"));
 
-            // After 8 attempts, trigger screen break
-            if (noClickCount >= 8) {
-                triggerScreenBreak();
-                return;
+            const currentCard = document.querySelector('.card.active');
+            const nextCard = document.getElementById(`page-${pageNumber}`);
+
+            if (currentCard) {
+                currentCard.classList.remove('active');
+                setTimeout(() => { currentCard.style.display = 'none'; }, 500);
             }
 
-            // Play escape sound
-            playSound('no-escape.mp3');
-
-            // Calculate random position within viewport
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            const buttonWidth = noButton.offsetWidth;
-            const buttonHeight = noButton.offsetHeight;
-
-            // Boundaries with padding
-            const padding = 50;
-            const maxX = viewportWidth - buttonWidth - padding;
-            const maxY = viewportHeight - buttonHeight - padding;
-            const minX = padding;
-            const minY = padding;
-
-            let newX = Math.random() * (maxX - minX) + minX;
-            let newY = Math.random() * (maxY - minY) + minY;
-
-            // Check distance from YES button to avoid overlap
-            const yesRect = yesButton.getBoundingClientRect();
-            const noRect = noButton.getBoundingClientRect();
-            const distance = Math.sqrt(
-                Math.pow(newX - yesRect.left, 2) +
-                Math.pow(newY - yesRect.top, 2)
-            );
-
-            // If too close to YES button, move to opposite corner
-            if (distance < 150) {
-                newX = viewportWidth > 600 ? maxX - 50 : minX + 50;
-                newY = maxY - 50;
+            if (nextCard) {
+                nextCard.style.display = 'flex';
+                setTimeout(() => {
+                    nextCard.classList.add('active');
+                    if(pageNumber > 1 && pageNumber < 6) {
+                        sReveal.currentTime = 0;
+                        sReveal.play();
+                    }
+                }, 50);
             }
-
-            // Calculate translation from current position
-            const translateX = newX - noRect.left;
-            const translateY = newY - noRect.top;
-
-            // Gradually shrink button
-            const scale = Math.max(0.7, 1 - (noClickCount * 0.04));
-
-            // Apply transform
-            noButton.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
         }
 
-        // Add event listeners for NO button
-        noButton.addEventListener('mouseenter', moveNoButton);
-        noButton.addEventListener('touchstart', moveNoButton);
-        noButton.addEventListener('click', moveNoButton);
+        // --- NO BUTTON LOGIC ---
+        const noBtn = document.getElementById('no-btn');
 
-        // YES button click
-        yesButton.addEventListener('click', () => {
-            playSound('yes-click.mp3');
-
-            // If screen break is showing, dismiss it first
-            const overlay = document.getElementById('screen-break-overlay');
-            if (overlay.classList.contains('show')) {
-                dismissScreenBreak();
+        function moveNoButton() {
+            // First time logic: Move button out of the card to the body
+            // This ensures it can move anywhere on screen without being trapped by flexbox
+            if (noBtn.parentElement.id === 'question-btn-group') {
+                noBtn.remove();
+                document.body.appendChild(noBtn);
+                noBtn.classList.add('escape-mode');
             }
 
-            setTimeout(() => {
-                navigateToPage('success-page');
+            // Calculate random position within viewport padding
+            const padding = 20;
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - (padding * 2)) + padding;
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - (padding * 2)) + padding;
+            
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+        }
 
-                // Play success sound after short delay
-                setTimeout(() => {
-                    playSound('success.mp3');
-                }, 300);
-            }, 200);
+        function handleNo() {
+            if (isScreenBroken) return; // Ignore clicks if screen is broken
+
+            sNo.currentTime = 0;
+            sNo.play();
+            
+            noClickCount++;
+            moveNoButton();
+
+            if (noClickCount >= maxNoClicks) {
+                triggerScreenBreak();
+            }
+        }
+
+        // Add mouseover for desktop users so it's super hard to click
+        noBtn.addEventListener('mouseover', () => {
+             if (!isScreenBroken && noClickCount > 0) moveNoButton();
         });
-
-        // ===== SCREEN BREAK EFFECT =====
-        let dismissTimer = null;
 
         function triggerScreenBreak() {
-            screenBreakTriggered = true;
-            const overlay = document.getElementById('screen-break-overlay');
+            isScreenBroken = true;
+            const breakEl = document.getElementById('screen-break');
+            
+            breakEl.style.display = 'block';
+            sBreak.currentTime = 0;
+            sBreak.play();
 
-            // Disable NO button
-            noButton.classList.add('disabled');
-
-            // Show overlay
-            overlay.style.display = 'flex';
-            setTimeout(() => {
-                overlay.classList.add('show');
-            }, 10);
-
-            // Play screen break sound
-            playSound('screen-break.mp3');
-
-            // Auto-dismiss after 6 seconds
-            dismissTimer = setTimeout(() => {
-                dismissScreenBreak();
+            // Hide the break after 6 seconds
+            breakTimeout = setTimeout(() => {
+                breakEl.style.display = 'none';
+                isScreenBroken = false;
+                noClickCount = 0; 
+                // Return button to normal? Optional, but let's keep it chaotic.
             }, 6000);
         }
 
-        function dismissScreenBreak() {
-            const overlay = document.getElementById('screen-break-overlay');
-            overlay.classList.remove('show');
+        // --- YES BUTTON LOGIC ---
+        function handleYes() {
+            // 1. Cancel Screen Break if active
+            clearTimeout(breakTimeout);
+            document.getElementById('screen-break').style.display = 'none';
+            sBreak.pause();
 
-            setTimeout(() => {
-                overlay.style.display = 'none';
-            }, 300);
+            // 2. Play Sound
+            sYes.play();
 
-            // Clear timer if manually dismissed
-            if (dismissTimer) {
-                clearTimeout(dismissTimer);
-                dismissTimer = null;
-            }
+            // 3. Remove the No button from existence
+            if (noBtn) noBtn.remove();
+
+            // 4. Hide Question Card
+            const card = document.getElementById('page-6');
+            card.classList.remove('active');
+            card.style.display = 'none';
+
+            // 5. Start Success Sequence
+            setupSuccessPage();
         }
 
-        // ===== MOBILE OPTIMIZATION =====
-        // Prevent double-tap zoom on buttons
-        document.querySelectorAll('.btn').forEach(button => {
-            button.style.touchAction = 'manipulation';
-        });
+        function setupSuccessPage() {
+            const page7 = document.getElementById('page-7');
+            page7.style.display = 'block';
+            
+            // Show background gif (keep it looping)
+            const bgGif = document.getElementById('success-bg');
+            bgGif.style.display = 'block';
 
-        // Handle orientation change
-        window.addEventListener('orientationchange', () => {
-            // Reset NO button position on orientation change
-            if (noButton && !screenBreakTriggered) {
-                noButton.style.transform = 'translate(0, 0) scale(1)';
-                noClickCount = 0;
+            sSuccess.play();
+            
+            initPhotoDeck();
+        }
+
+        // --- PHOTO DECK LOGIC ---
+        function initPhotoDeck() {
+            const container = document.getElementById('photo-deck-container');
+            // Duplicate array to ensure endless feel
+            let deckImages = [...photoAssets, ...photoAssets, ...photoAssets]; 
+
+            function renderDeck() {
+                container.innerHTML = ''; 
+                
+                // Render top 5 images for the stack effect
+                const maxRender = Math.min(deckImages.length, 5);
+
+                for (let i = 0; i < maxRender; i++) {
+                    const imgUrl = deckImages[i];
+                    const card = document.createElement('div');
+                    card.classList.add('photo-card');
+                    card.style.backgroundImage = `url('${imgUrl}')`;
+                    card.style.zIndex = 100 - i;
+                    
+                    if (i > 0) {
+                        // Style cards behind
+                        let scale = 1 - (i * 0.05);
+                        let translateY = i * 15;
+                        card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+                        card.style.filter = `brightness(${1 - (i*0.15)})`;
+                    } else {
+                        // Top card is clickable
+                        card.onclick = () => dropTopCard(card);
+                    }
+                    
+                    container.appendChild(card);
+                }
             }
-        });
 
-        // ===== PRELOAD CRITICAL ASSETS =====
-        window.addEventListener('load', () => {
-            // Preload screen break image
-            const img = new Image();
-            img.src = 'assets/images/screen-break.png';
+            function dropTopCard(cardElement) {
+                // Animate fall
+                cardElement.classList.add('falling');
+                sClick.currentTime = 0;
+                sClick.play();
 
-            // Preload critical sounds
-            const criticalSounds = ['screen-break.mp3', 'yes-click.mp3'];
-            criticalSounds.forEach(sound => {
-                const audio = new Audio(`assets/sounds/${sound}`);
-                audio.preload = 'auto';
-            });
-        });
+                // Wait for animation, then rotate array and re-render
+                setTimeout(() => {
+                    const movedImage = deckImages.shift();
+                    deckImages.push(movedImage);
+                    renderDeck();
+                }, 400); 
+            }
 
-        console.log('💖 Valentine Website Loaded! 💖');
+            renderDeck();
+        }
+
     </script>
 </body>
 </html>
